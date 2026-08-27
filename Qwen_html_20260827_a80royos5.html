@@ -1,0 +1,2528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#00D9A3">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>HealthAware AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #00D9A3;
+  --primary-dark: #00B88A;
+  --primary-light: #E6FAF4;
+  --secondary: #7C5CFF;
+  --accent: #FF6B9D;
+  --bg: #F5F7FB;
+  --text: #1A1F36;
+  --text-light: #6B7280;
+  --white: #FFFFFF;
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.12);
+  --radius: 24px;
+  --radius-sm: 16px;
+  --radius-xs: 12px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overscroll-behavior: none;
+}
+
+body {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.app-root {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: var(--bg);
+  display: none;
+  padding-bottom: 90px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.screen.active {
+  display: block;
+  animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideIn {
+  from { transform: translateX(30px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(5deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.8; }
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes gradient {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes blob {
+  0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+  50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* ===== SPLASH ===== */
+#splash {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  background-size: 200% 200%;
+  animation: gradient 8s ease infinite;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-align: center;
+  padding-bottom: 0;
+  overflow: hidden;
+}
+
+.splash-bg-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.4;
+  animation: blob 8s ease-in-out infinite;
+}
+
+.blob-1 { width: 300px; height: 300px; background: #FF6B9D; top: -100px; left: -100px; }
+.blob-2 { width: 250px; height: 250px; background: #00D9A3; bottom: -80px; right: -80px; animation-delay: 2s; }
+.blob-3 { width: 200px; height: 200px; background: #7C5CFF; top: 50%; left: 50%; animation-delay: 4s; }
+
+.splash-content {
+  position: relative;
+  z-index: 2;
+  animation: fadeInUp 1s ease;
+}
+
+.splash-logo-wrap {
+  width: 160px;
+  height: 160px;
+  margin: 0 auto 32px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(20px);
+  border-radius: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  animation: float 3s ease-in-out infinite;
+}
+
+.splash-logo-wrap svg {
+  width: 90px;
+  height: 90px;
+}
+
+.splash-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  letter-spacing: -1px;
+}
+
+.splash-subtitle {
+  font-size: 15px;
+  opacity: 0.9;
+  font-weight: 400;
+  line-height: 1.5;
+  padding: 0 40px;
+}
+
+.splash-loader {
+  margin-top: 50px;
+  width: 36px;
+  height: 36px;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: rotate 1s linear infinite;
+}
+
+.floating-symbols {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.floating-symbol {
+  position: absolute;
+  font-size: 28px;
+  opacity: 0.4;
+  animation: float 4s ease-in-out infinite;
+}
+
+/* ===== ONBOARDING ===== */
+#onboarding {
+  background: var(--bg);
+  padding-bottom: 0;
+}
+
+.onboarding-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.onboarding-slides {
+  flex: 1;
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+}
+
+.onboarding-slides::-webkit-scrollbar { display: none; }
+
+.onboarding-slide {
+  min-width: 100%;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 30px;
+  text-align: center;
+}
+
+.onboarding-visual {
+  width: 260px;
+  height: 260px;
+  margin-bottom: 40px;
+  position: relative;
+}
+
+.onboarding-visual svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 20px 40px rgba(124, 92, 255, 0.2));
+}
+
+.onboarding-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 16px;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+}
+
+.onboarding-text {
+  font-size: 15px;
+  color: var(--text-light);
+  line-height: 1.6;
+  padding: 0 20px;
+  max-width: 320px;
+}
+
+.onboarding-footer {
+  padding: 24px 30px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.progress-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #D1D5DB;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dot.active {
+  width: 28px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: white;
+  border: none;
+  padding: 18px 32px;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 8px 24px rgba(0, 217, 163, 0.3);
+  font-family: 'Inter', sans-serif;
+}
+
+.btn-primary:active {
+  transform: scale(0.97);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text-light);
+  border: none;
+  padding: 12px;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+}
+
+/* ===== LOGIN ===== */
+#login {
+  background: var(--bg);
+  padding: 80px 28px 40px;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.login-logo {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 20px;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 12px 32px rgba(0, 217, 163, 0.3);
+}
+
+.login-logo svg { width: 40px; height: 40px; }
+
+.login-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+  letter-spacing: -0.5px;
+}
+
+.login-subtitle {
+  color: var(--text-light);
+  font-size: 14px;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.input-field {
+  background: white;
+  border: 2px solid #E5E7EB;
+  padding: 16px 18px;
+  border-radius: 14px;
+  font-size: 15px;
+  transition: all 0.3s;
+  font-family: 'Inter', sans-serif;
+  width: 100%;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(0, 217, 163, 0.1);
+}
+
+.btn-google {
+  background: white;
+  border: 2px solid #E5E7EB;
+  padding: 16px;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  transition: all 0.3s;
+  margin-bottom: 12px;
+  font-family: 'Inter', sans-serif;
+  width: 100%;
+}
+
+.btn-google:active { transform: scale(0.98); }
+
+.divider {
+  text-align: center;
+  color: var(--text-light);
+  font-size: 13px;
+  margin: 16px 0;
+  position: relative;
+}
+
+.divider::before, .divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 40%;
+  height: 1px;
+  background: #E5E7EB;
+}
+
+.divider::before { left: 0; }
+.divider::after { right: 0; }
+
+.btn-guest {
+  background: transparent;
+  border: none;
+  color: var(--text-light);
+  padding: 16px;
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: underline;
+  font-family: 'Inter', sans-serif;
+  width: 100%;
+}
+
+/* ===== HOME ===== */
+#home {
+  background: var(--bg);
+  padding-bottom: 90px;
+}
+
+.home-header {
+  background: linear-gradient(135deg, var(--primary) 0%, #00E5B0 50%, var(--secondary) 100%);
+  background-size: 200% 200%;
+  animation: gradient 6s ease infinite;
+  padding: 60px 24px 36px;
+  border-radius: 0 0 32px 32px;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.home-header::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 200px;
+  height: 200px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  animation: blob 6s ease-in-out infinite;
+}
+
+.home-header::after {
+  content: '';
+  position: absolute;
+  bottom: -30%;
+  left: -10%;
+  width: 150px;
+  height: 150px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  animation: blob 8s ease-in-out infinite reverse;
+}
+
+.home-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  position: relative;
+  z-index: 2;
+}
+
+.home-greeting {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.home-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  cursor: pointer;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+.home-subtitle {
+  font-size: 14px;
+  opacity: 0.95;
+  position: relative;
+  z-index: 2;
+}
+
+.home-content {
+  padding: 24px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.section-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.3px;
+}
+
+.section-link {
+  font-size: 13px;
+  color: var(--primary-dark);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tip-card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 22px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(0, 217, 163, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.tip-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--primary), var(--secondary));
+}
+
+.tip-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.tip-text {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.5;
+  margin-bottom: 18px;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.tip-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-small {
+  background: var(--bg);
+  border: none;
+  padding: 10px 18px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.3s;
+  font-family: 'Inter', sans-serif;
+}
+
+.btn-small:active { transform: scale(0.95); }
+.btn-small:hover { background: var(--primary-light); color: var(--primary-dark); }
+
+.chatbot-card {
+  background: linear-gradient(135deg, var(--secondary) 0%, #9B7FFF 50%, var(--accent) 100%);
+  background-size: 200% 200%;
+  animation: gradient 5s ease infinite;
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 24px;
+  color: white;
+  box-shadow: 0 12px 32px rgba(124, 92, 255, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.chatbot-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 150px;
+  height: 150px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+}
+
+.chatbot-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+  position: relative;
+  z-index: 2;
+}
+
+.chatbot-avatar {
+  width: 48px;
+  height: 48px;
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.chatbot-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.chatbot-sub {
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+.chatbot-input {
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  padding: 14px 18px;
+  border-radius: 14px;
+  color: white;
+  font-size: 14px;
+  width: 100%;
+  margin-bottom: 12px;
+  backdrop-filter: blur(10px);
+  font-family: 'Inter', sans-serif;
+}
+
+.chatbot-input::placeholder { color: rgba(255, 255, 255, 0.75); }
+.chatbot-input:focus { outline: none; border-color: rgba(255, 255, 255, 0.6); }
+
+.chatbot-actions {
+  display: flex;
+  gap: 10px;
+  position: relative;
+  z-index: 2;
+}
+
+.btn-icon {
+  background: rgba(255, 255, 255, 0.25);
+  border: none;
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+  backdrop-filter: blur(10px);
+}
+
+.btn-icon:active { transform: scale(0.92); }
+
+.btn-send {
+  flex: 1;
+  background: white;
+  color: var(--secondary);
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-family: 'Inter', sans-serif;
+}
+
+.btn-send:active { transform: scale(0.97); }
+
+.topics-scroll {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scrollbar-width: none;
+  margin-bottom: 24px;
+}
+
+.topics-scroll::-webkit-scrollbar { display: none; }
+
+.topic-card-h {
+  min-width: 110px;
+  background: white;
+  border-radius: 18px;
+  padding: 18px 14px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: all 0.3s;
+  border: 2px solid transparent;
+}
+
+.topic-card-h:active { transform: scale(0.95); }
+.topic-card-h:hover { border-color: var(--primary); }
+
+.topic-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.topic-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.quick-actions-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.quick-action {
+  background: white;
+  border-radius: var(--radius-sm);
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.quick-action:active { transform: scale(0.97); }
+
+.quick-action-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.quick-action:nth-child(1) .quick-action-icon { background: linear-gradient(135deg, #FFE5E5, #FFB3B3); }
+.quick-action:nth-child(2) .quick-action-icon { background: linear-gradient(135deg, #E5F4FF, #B3D9FF); }
+.quick-action:nth-child(3) .quick-action-icon { background: linear-gradient(135deg, #FFF5E5, #FFE0B3); }
+.quick-action:nth-child(4) .quick-action-icon { background: linear-gradient(135deg, #F0E5FF, #D9B3FF); }
+
+.quick-action-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+}
+
+/* ===== CHAT ===== */
+#chat {
+  background: var(--bg);
+  padding-bottom: 90px;
+}
+
+.chat-header {
+  background: white;
+  padding: 50px 20px 18px;
+  border-bottom: 1px solid #F3F4F6;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.chat-back {
+  width: 40px;
+  height: 40px;
+  background: var(--bg);
+  border: none;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 18px;
+  color: var(--text);
+}
+
+.chat-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+
+.chat-info { flex: 1; }
+
+.chat-info h3 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.chat-status {
+  font-size: 12px;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--primary);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+.chat-messages {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 400px;
+}
+
+.message {
+  max-width: 82%;
+  padding: 14px 18px;
+  border-radius: 20px;
+  font-size: 14px;
+  line-height: 1.6;
+  animation: fadeInUp 0.3s ease;
+}
+
+.message.user {
+  align-self: flex-end;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: white;
+  border-bottom-right-radius: 6px;
+}
+
+.message.bot {
+  align-self: flex-start;
+  background: white;
+  color: var(--text);
+  border-bottom-left-radius: 6px;
+  box-shadow: var(--shadow);
+}
+
+.message.bot b { color: var(--text); }
+
+.message.bot .disclaimer {
+  font-size: 11px;
+  color: var(--text-light);
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid #F3F4F6;
+  font-style: italic;
+  line-height: 1.4;
+}
+
+.suggested-questions {
+  padding: 0 20px 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  background: white;
+  border: 1.5px solid #E5E7EB;
+  padding: 10px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+  color: var(--text);
+}
+
+.chip:active { transform: scale(0.95); }
+.chip:hover { border-color: var(--primary); background: var(--primary-light); }
+
+.chat-input-container {
+  background: white;
+  padding: 14px 20px 24px;
+  border-top: 1px solid #F3F4F6;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  position: sticky;
+  bottom: 0;
+}
+
+.chat-input {
+  flex: 1;
+  background: var(--bg);
+  border: 2px solid transparent;
+  padding: 13px 18px;
+  border-radius: 24px;
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+}
+
+.chat-input:focus { outline: none; border-color: var(--primary); }
+
+/* ===== EXPLORE ===== */
+#explore {
+  background: var(--bg);
+  padding: 60px 20px 90px;
+}
+
+.page-header {
+  margin-bottom: 22px;
+}
+
+.page-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+  letter-spacing: -0.5px;
+}
+
+.page-subtitle {
+  color: var(--text-light);
+  font-size: 14px;
+}
+
+.explore-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.explore-card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 22px 18px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: all 0.3s;
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.explore-card:active { transform: scale(0.97); }
+.explore-card:hover { border-color: var(--primary); }
+
+.explore-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  margin-bottom: 14px;
+}
+
+.explore-card:nth-child(1) .explore-icon { background: linear-gradient(135deg, #FFE5E5, #FFB3B3); }
+.explore-card:nth-child(2) .explore-icon { background: linear-gradient(135deg, #E5F4FF, #B3D9FF); }
+.explore-card:nth-child(3) .explore-icon { background: linear-gradient(135deg, #E5FFE5, #B3FFB3); }
+.explore-card:nth-child(4) .explore-icon { background: linear-gradient(135deg, #FFE5FF, #FFB3FF); }
+.explore-card:nth-child(5) .explore-icon { background: linear-gradient(135deg, #FFF5E5, #FFE0B3); }
+.explore-card:nth-child(6) .explore-icon { background: linear-gradient(135deg, #F0E5FF, #D9B3FF); }
+
+.explore-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.explore-desc {
+  font-size: 12px;
+  color: var(--text-light);
+  line-height: 1.5;
+}
+
+/* ===== CAMPAIGNS ===== */
+#campaigns {
+  background: var(--bg);
+  padding: 60px 20px 90px;
+}
+
+.campaign-card {
+  background: white;
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 18px;
+  box-shadow: var(--shadow);
+}
+
+.campaign-image {
+  width: 100%;
+  height: 180px;
+  position: relative;
+  overflow: hidden;
+}
+
+.campaign-image svg {
+  width: 100%;
+  height: 100%;
+}
+
+.campaign-content {
+  padding: 20px;
+}
+
+.campaign-tag {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: white;
+}
+
+.campaign-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 10px;
+  letter-spacing: -0.3px;
+}
+
+.campaign-text {
+  font-size: 13px;
+  color: var(--text-light);
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+
+.campaign-actions {
+  display: flex;
+  gap: 10px;
+}
+
+/* ===== CHALLENGES ===== */
+#challenges {
+  background: var(--bg);
+  padding: 60px 20px 90px;
+}
+
+.streak-card {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--secondary) 100%);
+  background-size: 200% 200%;
+  animation: gradient 5s ease infinite;
+  border-radius: var(--radius);
+  padding: 28px;
+  color: white;
+  text-align: center;
+  margin-bottom: 28px;
+  box-shadow: 0 12px 32px rgba(255, 107, 157, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.streak-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 150px;
+  height: 150px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+}
+
+.streak-number {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 56px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  position: relative;
+  z-index: 2;
+}
+
+.streak-label {
+  font-size: 16px;
+  font-weight: 600;
+  position: relative;
+  z-index: 2;
+}
+
+.challenge-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.challenge-item {
+  background: white;
+  border-radius: var(--radius-sm);
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.challenge-item:active { transform: scale(0.98); }
+
+.challenge-item.completed {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: white;
+}
+
+.challenge-icon {
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.challenge-text {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.challenge-check {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid #D1D5DB;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+  transition: all 0.3s;
+}
+
+.challenge-item.completed .challenge-check {
+  background: white;
+  color: var(--primary);
+  border-color: white;
+}
+
+/* ===== PROGRESS ===== */
+#progress {
+  background: var(--bg);
+  padding: 60px 20px 90px;
+}
+
+.progress-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+
+.stat-icon {
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+.stat-value {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: var(--text-light);
+  font-weight: 500;
+}
+
+.progress-chart {
+  background: white;
+  border-radius: var(--radius);
+  padding: 22px;
+  box-shadow: var(--shadow);
+  margin-bottom: 20px;
+}
+
+.chart-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 18px;
+}
+
+.chart-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.chart-bar-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.chart-bar-label {
+  font-size: 12px;
+  color: var(--text-light);
+  display: flex;
+  justify-content: space-between;
+  font-weight: 500;
+}
+
+.chart-bar {
+  height: 10px;
+  background: var(--bg);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.chart-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+  border-radius: 5px;
+  transition: width 1s ease;
+}
+
+/* ===== PROFILE ===== */
+#profile {
+  background: var(--bg);
+  padding: 60px 20px 90px;
+}
+
+.profile-header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.profile-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin: 0 auto 14px;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  border: 4px solid white;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+}
+
+.profile-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.profile-email {
+  font-size: 13px;
+  color: var(--text-light);
+}
+
+.profile-menu {
+  background: white;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.profile-menu-item {
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  transition: all 0.3s;
+  border-bottom: 1px solid #F3F4F6;
+}
+
+.profile-menu-item:last-child { border-bottom: none; }
+.profile-menu-item:active { background: var(--bg); }
+
+.profile-menu-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.profile-menu-text {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.profile-menu-arrow {
+  color: var(--text-light);
+  font-size: 18px;
+}
+
+/* ===== EMERGENCY ===== */
+#emergency {
+  background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+  background-size: 200% 200%;
+  animation: gradient 5s ease infinite;
+  padding: 60px 24px 90px;
+  color: white;
+}
+
+.emergency-icon {
+  font-size: 72px;
+  text-align: center;
+  margin-bottom: 20px;
+  animation: pulse 2s infinite;
+}
+
+.emergency-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 14px;
+  letter-spacing: -0.3px;
+}
+
+.emergency-text {
+  font-size: 15px;
+  text-align: center;
+  line-height: 1.6;
+  margin-bottom: 28px;
+  opacity: 0.95;
+}
+
+.emergency-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.emergency-btn {
+  background: white;
+  color: #FF6B6B;
+  border: none;
+  padding: 18px;
+  border-radius: 16px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.3s;
+  box-shadow: var(--shadow-lg);
+  font-family: 'Inter', sans-serif;
+}
+
+.emergency-btn:active { transform: scale(0.97); }
+
+/* ===== ADMIN ===== */
+#admin {
+  background: var(--bg);
+  padding: 60px 20px 90px;
+}
+
+.admin-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.admin-stat-card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+
+.admin-stat-icon {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.admin-stat-value {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.admin-stat-label {
+  font-size: 12px;
+  color: var(--text-light);
+  font-weight: 500;
+}
+
+.admin-section {
+  background: white;
+  border-radius: var(--radius);
+  padding: 22px;
+  box-shadow: var(--shadow);
+  margin-bottom: 20px;
+}
+
+.admin-section-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 18px;
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.admin-btn {
+  background: var(--bg);
+  border: 2px solid transparent;
+  padding: 18px 14px;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-align: center;
+}
+
+.admin-btn:active { transform: scale(0.97); }
+.admin-btn:hover { border-color: var(--primary); background: var(--primary-light); }
+
+.admin-btn-icon {
+  font-size: 24px;
+  margin-bottom: 6px;
+}
+
+.admin-btn-text {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* ===== BOTTOM NAV ===== */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  padding: 10px 16px 20px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.06);
+  border-radius: 24px 24px 0 0;
+  z-index: 100;
+  border-top: 1px solid #F3F4F6;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  cursor: pointer;
+  transition: all 0.3s;
+  padding: 6px 12px;
+  border-radius: 12px;
+  flex: 1;
+}
+
+.nav-item:active { transform: scale(0.9); }
+
+.nav-icon {
+  font-size: 22px;
+  transition: all 0.3s;
+}
+
+.nav-label {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text-light);
+  transition: all 0.3s;
+}
+
+.nav-item.active .nav-label {
+  color: var(--primary-dark);
+  font-weight: 700;
+}
+
+.nav-item.highlight {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  padding: 10px 16px;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 217, 163, 0.4);
+  transform: translateY(-10px);
+  flex: 1.2;
+}
+
+.nav-item.highlight .nav-label { color: white; font-weight: 700; }
+
+/* ===== LANGUAGE MODAL ===== */
+.language-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+.language-modal.active { display: flex; }
+
+.language-content {
+  background: white;
+  border-radius: 24px 24px 0 0;
+  padding: 28px 24px 40px;
+  width: 100%;
+  max-width: 500px;
+  animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.language-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.language-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.language-option {
+  background: var(--bg);
+  border: 2px solid transparent;
+  padding: 16px 18px;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.language-option:active { transform: scale(0.98); }
+.language-option:hover { border-color: var(--primary); }
+.language-option.selected { border-color: var(--primary); background: var(--primary-light); }
+
+/* ===== TOAST ===== */
+.toast {
+  position: fixed;
+  bottom: 110px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--text);
+  color: white;
+  padding: 14px 22px;
+  border-radius: 14px;
+  font-size: 13px;
+  font-weight: 500;
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1001;
+  box-shadow: var(--shadow-lg);
+  max-width: 90%;
+  text-align: center;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width: 0; height: 0; }
+
+/* ===== RESPONSIVE ===== */
+@media (min-width: 500px) {
+  body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  
+  .app-root {
+    max-width: 420px;
+    max-height: 900px;
+    border-radius: 40px;
+    box-shadow: 0 25px 100px rgba(0, 0, 0, 0.3);
+    border: 8px solid #1a1a1a;
+    overflow: hidden;
+  }
+  
+  .bottom-nav {
+    border-radius: 0 0 32px 32px;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="app-root">
+  
+  <!-- SPLASH -->
+  <div id="splash" class="screen active">
+    <div class="splash-bg-blob blob-1"></div>
+    <div class="splash-bg-blob blob-2"></div>
+    <div class="splash-bg-blob blob-3"></div>
+    <div class="floating-symbols">
+      <div class="floating-symbol" style="top: 15%; left: 10%;">💚</div>
+      <div class="floating-symbol" style="top: 25%; right: 12%; animation-delay: 1s;">🩺</div>
+      <div class="floating-symbol" style="bottom: 30%; left: 15%; animation-delay: 2s;"></div>
+      <div class="floating-symbol" style="bottom: 20%; right: 10%; animation-delay: 1.5s;">💉</div>
+      <div class="floating-symbol" style="top: 50%; left: 5%; animation-delay: 2.5s;">🧠</div>
+    </div>
+    <div class="splash-content">
+      <div class="splash-logo-wrap">
+        <svg viewBox="0 0 100 100" fill="none">
+          <defs>
+            <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#00D9A3"/>
+              <stop offset="100%" style="stop-color:#7C5CFF"/>
+            </linearGradient>
+          </defs>
+          <path d="M50 15 C30 15, 20 30, 20 45 C20 65, 35 80, 50 85 C65 80, 80 65, 80 45 C80 30, 70 15, 50 15 Z" fill="url(#logoGrad)" opacity="0.9"/>
+          <path d="M50 35 L50 65 M35 50 L65 50" stroke="white" stroke-width="6" stroke-linecap="round"/>
+          <circle cx="50" cy="50" r="8" fill="white" opacity="0.3"/>
+        </svg>
+      </div>
+      <h1 class="splash-title">HealthAware AI</h1>
+      <p class="splash-subtitle">Your Smart Public Health<br>Awareness Companion</p>
+      <div class="splash-loader"></div>
+    </div>
+  </div>
+
+  <!-- ONBOARDING -->
+  <div id="onboarding" class="screen">
+    <div class="onboarding-container">
+      <div class="onboarding-slides" id="onboardingSlides">
+        <div class="onboarding-slide">
+          <div class="onboarding-visual">
+            <svg viewBox="0 0 200 200" fill="none">
+              <circle cx="100" cy="100" r="80" fill="url(#grad1)" opacity="0.2"/>
+              <path d="M100 40 C70 40, 55 60, 55 85 C55 115, 75 135, 100 145 C125 135, 145 115, 145 85 C145 60, 130 40, 100 40 Z" fill="url(#grad1)"/>
+              <path d="M100 70 L100 110 M80 90 L120 90" stroke="white" stroke-width="8" stroke-linecap="round"/>
+              <circle cx="150" cy="60" r="15" fill="#FF6B9D" opacity="0.8"/>
+              <circle cx="50" cy="140" r="12" fill="#00D9A3" opacity="0.8"/>
+              <defs>
+                <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" style="stop-color:#00D9A3"/>
+                  <stop offset="100%" style="stop-color:#7C5CFF"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+          <h2 class="onboarding-title">Understand Your Health Better</h2>
+          <p class="onboarding-text">Learn simple and reliable health awareness information powered by AI.</p>
+        </div>
+        <div class="onboarding-slide">
+          <div class="onboarding-visual">
+            <svg viewBox="0 0 200 200" fill="none">
+              <rect x="60" y="40" width="80" height="120" rx="16" fill="url(#grad2)"/>
+              <rect x="70" y="60" width="60" height="80" rx="8" fill="white" opacity="0.9"/>
+              <circle cx="100" cy="100" r="15" fill="#7C5CFF"/>
+              <path d="M95 100 L99 104 L106 96" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="140" cy="70" r="18" fill="#FF6B9D" opacity="0.8"/>
+              <circle cx="60" cy="130" r="14" fill="#00D9A3" opacity="0.8"/>
+              <defs>
+                <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" style="stop-color:#7C5CFF"/>
+                  <stop offset="100%" style="stop-color:#FF6B9D"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+          <h2 class="onboarding-title">Ask. Learn. Stay Aware.</h2>
+          <p class="onboarding-text">Ask questions and receive easy-to-understand health awareness guidance.</p>
+        </div>
+        <div class="onboarding-slide">
+          <div class="onboarding-visual">
+            <svg viewBox="0 0 200 200" fill="none">
+              <circle cx="70" cy="100" r="25" fill="#00D9A3" opacity="0.8"/>
+              <circle cx="130" cy="100" r="25" fill="#7C5CFF" opacity="0.8"/>
+              <circle cx="100" cy="70" r="25" fill="#FF6B9D" opacity="0.8"/>
+              <circle cx="100" cy="130" r="25" fill="#FFB347" opacity="0.8"/>
+              <path d="M70 100 L100 70 L130 100 L100 130 Z" fill="white" opacity="0.3"/>
+              <path d="M100 85 L100 115 M85 100 L115 100" stroke="white" stroke-width="4" stroke-linecap="round"/>
+              <defs>
+                <linearGradient id="grad3" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" style="stop-color:#00D9A3"/>
+                  <stop offset="100%" style="stop-color:#7C5CFF"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+          <h2 class="onboarding-title">Better Awareness. Healthier Communities.</h2>
+          <p class="onboarding-text">Access health tips, campaigns, prevention information, and more.</p>
+        </div>
+      </div>
+      <div class="onboarding-footer">
+        <div class="progress-dots">
+          <div class="dot active"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+        <button class="btn-primary" onclick="nextOnboarding()">Continue</button>
+        <button class="btn-secondary" onclick="showScreen('login')">Skip</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOGIN -->
+  <div id="login" class="screen">
+    <div class="login-header">
+      <div class="login-logo">
+        <svg viewBox="0 0 100 100" fill="none">
+          <path d="M50 15 C30 15, 20 30, 20 45 C20 65, 35 80, 50 85 C65 80, 80 65, 80 45 C80 30, 70 15, 50 15 Z" fill="white" opacity="0.9"/>
+          <path d="M50 35 L50 65 M35 50 L65 50" stroke="#00D9A3" stroke-width="6" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h1 class="login-title">Welcome Back</h1>
+      <p class="login-subtitle">Sign in to continue your health journey</p>
+    </div>
+    <form class="login-form" onsubmit="handleLogin(event)">
+      <input type="email" class="input-field" placeholder="Email address" required>
+      <input type="password" class="input-field" placeholder="Password" required>
+      <button type="submit" class="btn-primary" style="width: 100%;">Sign In</button>
+    </form>
+    <div class="divider">or</div>
+    <button class="btn-google" onclick="handleLogin(event)">
+      <span style="font-size: 18px;"></span> Continue with Google
+    </button>
+    <button class="btn-primary" style="width: 100%; background: linear-gradient(135deg, var(--secondary) 0%, var(--accent) 100%); box-shadow: 0 8px 24px rgba(124, 92, 255, 0.3);" onclick="showScreen('home')">
+      Create Account
+    </button>
+    <button class="btn-guest" onclick="showScreen('home')">Continue as Guest →</button>
+  </div>
+
+  <!-- HOME -->
+  <div id="home" class="screen">
+    <div class="home-header">
+      <div class="home-top">
+        <div>
+          <h1 class="home-greeting">Hey 👋</h1>
+          <p class="home-subtitle">Stay healthy, stay aware!</p>
+        </div>
+        <div class="home-avatar" onclick="showScreen('profile')"></div>
+      </div>
+    </div>
+    <div class="home-content">
+      <div class="tip-card">
+        <div class="tip-badge">🔥 Daily Health Tip</div>
+        <p class="tip-text">"Small healthy habits today can make a big difference tomorrow."</p>
+        <div class="tip-actions">
+          <button class="btn-small" onclick="saveTip()">💾 Save</button>
+          <button class="btn-small" onclick="shareTip()"> Share</button>
+        </div>
+      </div>
+
+      <div class="chatbot-card">
+        <div class="chatbot-top">
+          <div class="chatbot-avatar">🤖</div>
+          <div>
+            <div class="chatbot-title">Ask HealthAware AI</div>
+            <div class="chatbot-sub">What's on your mind today?</div>
+          </div>
+        </div>
+        <input type="text" class="chatbot-input" placeholder="Ask a health awareness question..." id="homeChatInput">
+        <div class="chatbot-actions">
+          <button class="btn-icon">🎤</button>
+          <button class="btn-send" onclick="sendFromHome()">Send ➤</button>
+        </div>
+      </div>
+
+      <div class="section-header">
+        <h2 class="section-title">🩺 Explore Topics</h2>
+        <span class="section-link" onclick="showScreen('explore')">See all</span>
+      </div>
+      <div class="topics-scroll">
+        <div class="topic-card-h" onclick="showTopicDetail('Nutrition')">
+          <div class="topic-icon"></div>
+          <div class="topic-name">Nutrition</div>
+        </div>
+        <div class="topic-card-h" onclick="showTopicDetail('Hygiene')">
+          <div class="topic-icon">🧼</div>
+          <div class="topic-name">Hygiene</div>
+        </div>
+        <div class="topic-card-h" onclick="showTopicDetail('Fitness')">
+          <div class="topic-icon">🏃</div>
+          <div class="topic-name">Fitness</div>
+        </div>
+        <div class="topic-card-h" onclick="showTopicDetail('Disease Prevention')">
+          <div class="topic-icon">🦠</div>
+          <div class="topic-name">Prevention</div>
+        </div>
+        <div class="topic-card-h" onclick="showTopicDetail('Mental Wellness')">
+          <div class="topic-icon">🧠</div>
+          <div class="topic-name">Mental</div>
+        </div>
+        <div class="topic-card-h" onclick="showTopicDetail('Vaccination')">
+          <div class="topic-icon">💉</div>
+          <div class="topic-name">Vaccine</div>
+        </div>
+      </div>
+
+      <div class="section-header">
+        <h2 class="section-title">⚡ Quick Actions</h2>
+      </div>
+      <div class="quick-actions-row">
+        <div class="quick-action" onclick="showScreen('chat')">
+          <div class="quick-action-icon">🎙️</div>
+          <div class="quick-action-text">Ask with Voice</div>
+        </div>
+        <div class="quick-action" onclick="showScreen('campaigns')">
+          <div class="quick-action-icon">📢</div>
+          <div class="quick-action-text">Campaigns</div>
+        </div>
+        <div class="quick-action" onclick="showScreen('challenges')">
+          <div class="quick-action-icon">🔥</div>
+          <div class="quick-action-text">Daily Challenge</div>
+        </div>
+        <div class="quick-action" onclick="showScreen('emergency')">
+          <div class="quick-action-icon">🚨</div>
+          <div class="quick-action-text">Emergency</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAT -->
+  <div id="chat" class="screen">
+    <div class="chat-header">
+      <button class="chat-back" onclick="showScreen('home')">←</button>
+      <div class="chat-avatar"></div>
+      <div class="chat-info">
+        <h3>HealthAware AI</h3>
+        <div class="chat-status">
+          <div class="status-dot"></div>
+          Online • Awareness Assistant
+        </div>
+      </div>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="message bot">
+        Hi there!  I'm HealthAware AI, your health awareness companion. How can I help you today?
+        <div class="disclaimer">ℹ️ This information is for health awareness only and is not a medical diagnosis.</div>
+      </div>
+    </div>
+    <div class="suggested-questions">
+      <div class="chip" onclick="askQuestion('How can I improve my immunity?')">How can I improve my immunity?</div>
+      <div class="chip" onclick="askQuestion('How to prevent dengue?')">How to prevent dengue?</div>
+      <div class="chip" onclick="askQuestion('Healthy food habits?')">Healthy food habits?</div>
+      <div class="chip" onclick="askQuestion('How can I maintain hygiene?')">How can I maintain hygiene?</div>
+    </div>
+    <div class="chat-input-container">
+      <button class="btn-icon" style="background: var(--bg); color: var(--text);">🎤</button>
+      <input type="text" class="chat-input" placeholder="Type your question..." id="chatInput" onkeypress="handleChatKeypress(event)">
+      <button class="btn-icon" style="background: var(--primary); color: white;" onclick="sendMessage()">➤</button>
+    </div>
+  </div>
+
+  <!-- EXPLORE -->
+  <div id="explore" class="screen">
+    <div class="page-header">
+      <h1 class="page-title">Explore Topics</h1>
+      <p class="page-subtitle">Discover health awareness information</p>
+    </div>
+    <div class="explore-grid">
+      <div class="explore-card" onclick="showTopicDetail('Nutrition')">
+        <div class="explore-icon"></div>
+        <div class="explore-name">Nutrition</div>
+        <div class="explore-desc">Healthy food habits and balanced diet</div>
+      </div>
+      <div class="explore-card" onclick="showTopicDetail('Hygiene')">
+        <div class="explore-icon">🧼</div>
+        <div class="explore-name">Hygiene</div>
+        <div class="explore-desc">Personal hygiene and sanitation</div>
+      </div>
+      <div class="explore-card" onclick="showTopicDetail('Disease Prevention')">
+        <div class="explore-icon">🦠</div>
+        <div class="explore-name">Prevention</div>
+        <div class="explore-desc">Disease prevention practices</div>
+      </div>
+      <div class="explore-card" onclick="showTopicDetail('Mental Wellness')">
+        <div class="explore-icon">🧠</div>
+        <div class="explore-name">Mental Wellness</div>
+        <div class="explore-desc">Wellness and healthy coping</div>
+      </div>
+      <div class="explore-card" onclick="showTopicDetail('Fitness')">
+        <div class="explore-icon">🏃</div>
+        <div class="explore-name">Fitness</div>
+        <div class="explore-desc">Physical activity awareness</div>
+      </div>
+      <div class="explore-card" onclick="showTopicDetail('Vaccination')">
+        <div class="explore-icon">💉</div>
+        <div class="explore-name">Vaccination</div>
+        <div class="explore-desc">Vaccination awareness</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CAMPAIGNS -->
+  <div id="campaigns" class="screen">
+    <div class="page-header">
+      <h1 class="page-title">Awareness Campaigns</h1>
+      <p class="page-subtitle">Join the movement for better health</p>
+    </div>
+    <div class="campaign-card">
+      <div class="campaign-image">
+        <svg viewBox="0 0 400 180" preserveAspectRatio="xMidYMid slice">
+          <defs>
+            <linearGradient id="camp1" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#FF6B6B"/>
+              <stop offset="100%" style="stop-color:#FF8E53"/>
+            </linearGradient>
+          </defs>
+          <rect width="400" height="180" fill="url(#camp1)"/>
+          <circle cx="200" cy="90" r="50" fill="white" opacity="0.2"/>
+          <text x="200" y="100" font-size="60" text-anchor="middle">🦟</text>
+          <text x="200" y="160" font-size="14" fill="white" text-anchor="middle" font-weight="bold">STOP DENGUE</text>
+        </svg>
+      </div>
+      <div class="campaign-content">
+        <div class="campaign-tag" style="background: var(--accent);">URGENT</div>
+        <h3 class="campaign-title">🦟 STOP DENGUE</h3>
+        <p class="campaign-text">Prevent mosquito breeding. Protect your community. Remove standing water, use mosquito nets, and wear protective clothing.</p>
+        <div class="campaign-actions">
+          <button class="btn-small" onclick="saveCampaign()">💾 Save</button>
+          <button class="btn-small" onclick="shareCampaign()">📤 Share</button>
+        </div>
+      </div>
+    </div>
+    <div class="campaign-card">
+      <div class="campaign-image">
+        <svg viewBox="0 0 400 180" preserveAspectRatio="xMidYMid slice">
+          <defs>
+            <linearGradient id="camp2" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#FF6B9D"/>
+              <stop offset="100%" style="stop-color:#FFB347"/>
+            </linearGradient>
+          </defs>
+          <rect width="400" height="180" fill="url(#camp2)"/>
+          <circle cx="200" cy="90" r="50" fill="white" opacity="0.2"/>
+          <text x="200" y="105" font-size="60" text-anchor="middle">❤️</text>
+          <text x="200" y="160" font-size="14" fill="white" text-anchor="middle" font-weight="bold">HEART HEALTH</text>
+        </svg>
+      </div>
+      <div class="campaign-content">
+        <div class="campaign-tag" style="background: var(--accent);">HEALTH</div>
+        <h3 class="campaign-title">❤️ HEART HEALTH</h3>
+        <p class="campaign-text">Small lifestyle changes can support heart health. Eat balanced meals, exercise regularly, and manage stress.</p>
+        <div class="campaign-actions">
+          <button class="btn-small" onclick="saveCampaign()">💾 Save</button>
+          <button class="btn-small" onclick="shareCampaign()">📤 Share</button>
+        </div>
+      </div>
+    </div>
+    <div class="campaign-card">
+      <div class="campaign-image">
+        <svg viewBox="0 0 400 180" preserveAspectRatio="xMidYMid slice">
+          <defs>
+            <linearGradient id="camp3" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#00D9A3"/>
+              <stop offset="100%" style="stop-color:#7C5CFF"/>
+            </linearGradient>
+          </defs>
+          <rect width="400" height="180" fill="url(#camp3)"/>
+          <circle cx="200" cy="90" r="50" fill="white" opacity="0.2"/>
+          <text x="200" y="105" font-size="60" text-anchor="middle"></text>
+          <text x="200" y="160" font-size="14" fill="white" text-anchor="middle" font-weight="bold">EAT SMART</text>
+        </svg>
+      </div>
+      <div class="campaign-content">
+        <div class="campaign-tag" style="background: var(--primary);">NUTRITION</div>
+        <h3 class="campaign-title">🥗 EAT SMART</h3>
+        <p class="campaign-text">Healthy eating starts with simple choices. Include more vegetables, fruits, and whole grains in your daily meals.</p>
+        <div class="campaign-actions">
+          <button class="btn-small" onclick="saveCampaign()"> Save</button>
+          <button class="btn-small" onclick="shareCampaign()">📤 Share</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHALLENGES -->
+  <div id="challenges" class="screen">
+    <div class="page-header">
+      <h1 class="page-title">Daily Challenges 🔥</h1>
+      <p class="page-subtitle">Build healthy habits one day at a time</p>
+    </div>
+    <div class="streak-card">
+      <div class="streak-number">7</div>
+      <div class="streak-label">Day Awareness Streak 🔥</div>
+    </div>
+    <div class="section-header">
+      <h2 class="section-title">Today's Challenge</h2>
+    </div>
+    <div class="challenge-list">
+      <div class="challenge-item" onclick="toggleChallenge(this)">
+        <div class="challenge-icon">💧</div>
+        <div class="challenge-text">Drink enough water (8 glasses)</div>
+        <div class="challenge-check">✓</div>
+      </div>
+      <div class="challenge-item" onclick="toggleChallenge(this)">
+        <div class="challenge-icon">🧼</div>
+        <div class="challenge-text">Practice proper hand hygiene</div>
+        <div class="challenge-check">✓</div>
+      </div>
+      <div class="challenge-item" onclick="toggleChallenge(this)">
+        <div class="challenge-icon">🚶</div>
+        <div class="challenge-text">Take a healthy activity break</div>
+        <div class="challenge-check">✓</div>
+      </div>
+      <div class="challenge-item" onclick="toggleChallenge(this)">
+        <div class="challenge-icon">🥗</div>
+        <div class="challenge-text">Eat a balanced meal</div>
+        <div class="challenge-check">✓</div>
+      </div>
+      <div class="challenge-item" onclick="toggleChallenge(this)">
+        <div class="challenge-icon"></div>
+        <div class="challenge-text">Get 7-8 hours of sleep</div>
+        <div class="challenge-check">✓</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div id="progress" class="screen">
+    <div class="page-header">
+      <h1 class="page-title">My Progress</h1>
+      <p class="page-subtitle">Track your health awareness journey</p>
+    </div>
+    <div class="progress-stats">
+      <div class="stat-card">
+        <div class="stat-icon">📚</div>
+        <div class="stat-value" id="topicsExplored">12</div>
+        <div class="stat-label">Topics Explored</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🔥</div>
+        <div class="stat-value">7</div>
+        <div class="stat-label">Day Streak</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">💡</div>
+        <div class="stat-value" id="tipsSaved">5</div>
+        <div class="stat-label">Tips Saved</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🤖</div>
+        <div class="stat-value" id="questionsAsked">8</div>
+        <div class="stat-label">AI Questions</div>
+      </div>
+    </div>
+    <div class="progress-chart">
+      <h3 class="chart-title">Weekly Activity</h3>
+      <div class="chart-bars">
+        <div class="chart-bar-item">
+          <div class="chart-bar-label"><span>Topics Explored</span><span>85%</span></div>
+          <div class="chart-bar"><div class="chart-bar-fill" style="width: 85%;"></div></div>
+        </div>
+        <div class="chart-bar-item">
+          <div class="chart-bar-label"><span>Challenges Completed</span><span>70%</span></div>
+          <div class="chart-bar"><div class="chart-bar-fill" style="width: 70%;"></div></div>
+        </div>
+        <div class="chart-bar-item">
+          <div class="chart-bar-label"><span>AI Questions Asked</span><span>60%</span></div>
+          <div class="chart-bar"><div class="chart-bar-fill" style="width: 60%;"></div></div>
+        </div>
+        <div class="chart-bar-item">
+          <div class="chart-bar-label"><span>Campaigns Shared</span><span>45%</span></div>
+          <div class="chart-bar"><div class="chart-bar-fill" style="width: 45%;"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROFILE -->
+  <div id="profile" class="screen">
+    <div class="profile-header">
+      <div class="profile-avatar">👤</div>
+      <h2 class="profile-name">Alex Johnson</h2>
+      <p class="profile-email">alex.johnson@email.com</p>
+    </div>
+    <div class="profile-menu">
+      <div class="profile-menu-item" onclick="showLanguageModal()">
+        <div class="profile-menu-icon">🌐</div>
+        <div class="profile-menu-text">Language</div>
+        <div class="profile-menu-arrow">›</div>
+      </div>
+      <div class="profile-menu-item">
+        <div class="profile-menu-icon">🔔</div>
+        <div class="profile-menu-text">Notifications</div>
+        <div class="profile-menu-arrow">›</div>
+      </div>
+      <div class="profile-menu-item">
+        <div class="profile-menu-icon">💾</div>
+        <div class="profile-menu-text">Saved Health Tips</div>
+        <div class="profile-menu-arrow">›</div>
+      </div>
+      <div class="profile-menu-item">
+        <div class="profile-menu-icon">🔒</div>
+        <div class="profile-menu-text">Privacy Settings</div>
+        <div class="profile-menu-arrow">›</div>
+      </div>
+      <div class="profile-menu-item">
+        <div class="profile-menu-icon">⚙️</div>
+        <div class="profile-menu-text">App Settings</div>
+        <div class="profile-menu-arrow">›</div>
+      </div>
+      <div class="profile-menu-item" onclick="showScreen('emergency')">
+        <div class="profile-menu-icon"></div>
+        <div class="profile-menu-text">Emergency Info</div>
+        <div class="profile-menu-arrow">›</div>
+      </div>
+      <div class="profile-menu-item" onclick="showScreen('admin')">
+        <div class="profile-menu-icon">👨‍💼</div>
+        <div class="profile-menu-text">Admin Dashboard</div>
+        <div class="profile-menu-arrow">›</div>
+      </div>
+      <div class="profile-menu-item" onclick="handleLogout()">
+        <div class="profile-menu-icon" style="background: #FEE2E2;">🚪</div>
+        <div class="profile-menu-text" style="color: #DC2626;">Logout</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EMERGENCY -->
+  <div id="emergency" class="screen">
+    <div class="emergency-icon">🚨</div>
+    <h1 class="emergency-title">Need Urgent Help?</h1>
+    <p class="emergency-text">This application provides health awareness information and is not an emergency service. For medical emergencies, please contact local emergency services or a qualified healthcare professional immediately.</p>
+    <div class="emergency-actions">
+      <button class="emergency-btn" onclick="callEmergency()">📞 Call Emergency Services</button>
+      <button class="emergency-btn" onclick="locateHealthcare()">🗺️ Find Nearby Healthcare</button>
+      <button class="emergency-btn" onclick="showScreen('home')" style="color: white; background: rgba(255,255,255,0.2);">← Back to Home</button>
+    </div>
+  </div>
+
+  <!-- ADMIN -->
+  <div id="admin" class="screen">
+    <div class="page-header">
+      <h1 class="page-title">Admin Dashboard</h1>
+      <p class="page-subtitle">Manage HealthAware AI platform</p>
+    </div>
+    <div class="admin-stats">
+      <div class="admin-stat-card">
+        <div class="admin-stat-icon">👥</div>
+        <div class="admin-stat-value">12,847</div>
+        <div class="admin-stat-label">Total Users</div>
+      </div>
+      <div class="admin-stat-card">
+        <div class="admin-stat-icon">💬</div>
+        <div class="admin-stat-value">45,293</div>
+        <div class="admin-stat-label">AI Conversations</div>
+      </div>
+      <div class="admin-stat-card">
+        <div class="admin-stat-icon">🔥</div>
+        <div class="admin-stat-value">156</div>
+        <div class="admin-stat-label">Popular Topics</div>
+      </div>
+      <div class="admin-stat-card">
+        <div class="admin-stat-icon">📈</div>
+        <div class="admin-stat-value">89%</div>
+        <div class="admin-stat-label">Engagement</div>
+      </div>
+    </div>
+    <div class="admin-section">
+      <h3 class="admin-section-title">Quick Actions</h3>
+      <div class="admin-grid">
+        <div class="admin-btn"><div class="admin-btn-icon">➕</div><div class="admin-btn-text">Add Content</div></div>
+        <div class="admin-btn"><div class="admin-btn-icon">✏️</div><div class="admin-btn-text">Edit Campaigns</div></div>
+        <div class="admin-btn"><div class="admin-btn-icon">💡</div><div class="admin-btn-text">Create Tips</div></div>
+        <div class="admin-btn"><div class="admin-btn-icon">📂</div><div class="admin-btn-text">Categories</div></div>
+        <div class="admin-btn"><div class="admin-btn-icon">❓</div><div class="admin-btn-text">Review Qs</div></div>
+        <div class="admin-btn"><div class="admin-btn-icon"></div><div class="admin-btn-text">Announcements</div></div>
+      </div>
+    </div>
+    <div class="admin-section">
+      <h3 class="admin-section-title">Popular Topics</h3>
+      <div class="chart-bars">
+        <div class="chart-bar-item">
+          <div class="chart-bar-label"><span>🦠 Disease Prevention</span><span>2,847</span></div>
+          <div class="chart-bar"><div class="chart-bar-fill" style="width: 95%;"></div></div>
+        </div>
+        <div class="chart-bar-item">
+          <div class="chart-bar-label"><span>💉 Vaccination</span><span>2,156</span></div>
+          <div class="chart-bar"><div class="chart-bar-fill" style="width: 78%;"></div></div>
+        </div>
+        <div class="chart-bar-item">
+          <div class="chart-bar-label"><span>🥗 Nutrition</span><span>1,923</span></div>
+          <div class="chart-bar"><div class="chart-bar-fill" style="width: 68%;"></div></div>
+        </div>
+        <div class="chart-bar-item">
+          <div class="chart-bar-label"><span>🧠 Mental Wellness</span><span>1,654</span></div>
+          <div class="chart-bar"><div class="chart-bar-fill" style="width: 58%;"></div></div>
+        </div>
+      </div>
+    </div>
+    <button class="btn-primary" onclick="showScreen('home')" style="width: 100%;">← Back to App</button>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav" id="bottomNav" style="display: none;">
+    <div class="nav-item" onclick="showScreen('home')">
+      <div class="nav-icon">🏠</div>
+      <div class="nav-label">Home</div>
+    </div>
+    <div class="nav-item highlight" onclick="showScreen('chat')">
+      <div class="nav-icon"></div>
+      <div class="nav-label">AI Chat</div>
+    </div>
+    <div class="nav-item" onclick="showScreen('explore')">
+      <div class="nav-icon">🔍</div>
+      <div class="nav-label">Explore</div>
+    </div>
+    <div class="nav-item" onclick="showScreen('progress')">
+      <div class="nav-icon">🔥</div>
+      <div class="nav-label">Progress</div>
+    </div>
+    <div class="nav-item" onclick="showScreen('profile')">
+      <div class="nav-icon">👤</div>
+      <div class="nav-label">Profile</div>
+    </div>
+  </div>
+
+  <!-- LANGUAGE MODAL -->
+  <div class="language-modal" id="languageModal">
+    <div class="language-content">
+      <h3 class="language-title">Select Language</h3>
+      <div class="language-options">
+        <div class="language-option selected" onclick="selectLanguage(this, 'English')">
+          <span>🇬🇧</span> English
+        </div>
+        <div class="language-option" onclick="selectLanguage(this, 'Tamil')">
+          <span>🇮</span> தமிழ் (Tamil)
+        </div>
+        <div class="language-option" onclick="selectLanguage(this, 'Hindi')">
+          <span>🇮🇳</span> हिन्दी (Hindi)
+        </div>
+      </div>
+      <button class="btn-primary" style="width: 100%;" onclick="closeLanguageModal()">Done</button>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+let currentScreen = 'splash';
+let onboardingIndex = 0;
+let savedTips = 5;
+let questionsAsked = 8;
+let topicsExplored = 12;
+
+function showScreen(screenId) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const target = document.getElementById(screenId);
+  if (target) {
+    target.classList.add('active');
+    currentScreen = screenId;
+    target.scrollTop = 0;
+    
+    const bottomNav = document.getElementById('bottomNav');
+    const withNav = ['home', 'chat', 'explore', 'progress', 'profile', 'campaigns', 'challenges'];
+    bottomNav.style.display = withNav.includes(screenId) ? 'flex' : 'none';
+    
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    const navMap = { 'home': 0, 'chat': 1, 'explore': 2, 'progress': 3, 'profile': 4 };
+    if (navMap[screenId] !== undefined) {
+      document.querySelectorAll('.nav-item')[navMap[screenId]].classList.add('active');
+    }
+  }
+}
+
+setTimeout(() => {
+  if (currentScreen === 'splash') showScreen('onboarding');
+}, 3000);
+
+function nextOnboarding() {
+  onboardingIndex++;
+  if (onboardingIndex < 3) {
+    const slides = document.getElementById('onboardingSlides');
+    slides.scrollTo({ left: onboardingIndex * slides.offsetWidth, behavior: 'smooth' });
+    updateDots();
+  } else {
+    showScreen('login');
+  }
+}
+
+function updateDots() {
+  document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === onboardingIndex));
+}
+
+function handleLogin(e) {
+  e.preventDefault();
+  showToast('Welcome to HealthAware AI! 🎉');
+  setTimeout(() => showScreen('home'), 800);
+}
+
+function handleLogout() {
+  showToast('Logged out successfully');
+  setTimeout(() => showScreen('login'), 800);
+}
+
+function sendMessage() {
+  const input = document.getElementById('chatInput');
+  const msg = input.value.trim();
+  if (msg) {
+    addMessage(msg, 'user');
+    input.value = '';
+    questionsAsked++;
+    document.getElementById('questionsAsked').textContent = questionsAsked;
+    setTimeout(() => addMessage(generateResponse(msg), 'bot'), 900);
+  }
+}
+
+function sendFromHome() {
+  const input = document.getElementById('homeChatInput');
+  const msg = input.value.trim();
+  if (msg) {
+    showScreen('chat');
+    setTimeout(() => {
+      addMessage(msg, 'user');
+      input.value = '';
+      questionsAsked++;
+      document.getElementById('questionsAsked').textContent = questionsAsked;
+      setTimeout(() => addMessage(generateResponse(msg), 'bot'), 900);
+    }, 400);
+  }
+}
+
+function askQuestion(q) {
+  document.getElementById('chatInput').value = q;
+  sendMessage();
+}
+
+function addMessage(text, type) {
+  const c = document.getElementById('chatMessages');
+  const d = document.createElement('div');
+  d.className = `message ${type}`;
+  if (type === 'bot') {
+    d.innerHTML = text + '<div class="disclaimer">ℹ️ This information is for health awareness only and is not a medical diagnosis. Consult a healthcare professional for medical concerns.</div>';
+  } else {
+    d.textContent = text;
+  }
+  c.appendChild(d);
+  c.scrollTop = c.scrollHeight;
+}
+
+function generateResponse(q) {
+  const lq = q.toLowerCase();
+  if (lq.includes('immunity')) return 'To improve your immunity:<br><br>🥗 <b>Eat balanced meals</b> rich in vitamins C and D<br>😴 <b>Get 7-8 hours</b> of quality sleep<br>🏃 <b>Exercise regularly</b> - even 30 minutes helps<br> <b>Stay hydrated</b> throughout the day<br>🧘 <b>Manage stress</b> through meditation<br><br>Consistency is key!';
+  if (lq.includes('dengue')) return 'To prevent dengue:<br><br>🦟 <b>Eliminate standing water</b> where mosquitoes breed<br>🪟 <b>Use mosquito nets</b> and screens<br> <b>Wear protective clothing</b><br>🧴 <b>Apply mosquito repellent</b><br>🏠 <b>Keep surroundings clean</b><br><br>Seek medical help if you experience high fever or severe headache.';
+  if (lq.includes('food') || lq.includes('eat') || lq.includes('nutrition')) return 'Healthy food habits:<br><br>🥦 <b>Eat more vegetables</b> and fruits daily<br>🌾 <b>Choose whole grains</b><br> <b>Drink plenty of water</b><br>🍽️ <b>Practice portion control</b><br>🚫 <b>Limit processed foods</b> and sugar<br><br>Balance is the key!';
+  if (lq.includes('hygiene')) return 'Maintaining good hygiene:<br><br>🧼 <b>Wash hands</b> with soap for 20 seconds<br>🚿 <b>Bathe daily</b><br> <b>Brush teeth</b> twice a day<br>👕 <b>Wear clean clothes</b><br>🏠 <b>Keep spaces sanitized</b><br><br>Good hygiene prevents many diseases!';
+  return 'Great question! Here are some tips:<br><br>✅ <b>Stay active</b> - 30 min exercise daily<br>✅ <b>Eat balanced meals</b><br>✅ <b>Get 7-8 hours sleep</b><br>✅ <b>Stay hydrated</b><br>✅ <b>Manage stress</b><br>✅ <b>Practice good hygiene</b><br><br>Try asking about nutrition, hygiene, or disease prevention for more details!';
+}
+
+function handleChatKeypress(e) { if (e.key === 'Enter') sendMessage(); }
+
+function toggleChallenge(el) {
+  el.classList.toggle('completed');
+  showToast(el.classList.contains('completed') ? 'Challenge completed! 🎉' : 'Marked incomplete');
+}
+
+function saveTip() { savedTips++; document.getElementById('tipsSaved').textContent = savedTips; showToast('Tip saved! '); }
+function shareTip() { showToast('Tip shared! 📤'); }
+function saveCampaign() { showToast('Campaign saved! 💾'); }
+function shareCampaign() { showToast('Campaign shared! 📤'); }
+
+function showTopicDetail(t) {
+  topicsExplored++;
+  document.getElementById('topicsExplored').textContent = topicsExplored;
+  showToast(`Exploring ${t}... 📚`);
+}
+
+function callEmergency() { showToast('Calling emergency services... 📞'); }
+function locateHealthcare() { showToast('Locating nearby healthcare... ️'); }
+
+function showLanguageModal() { document.getElementById('languageModal').classList.add('active'); }
+function closeLanguageModal() { document.getElementById('languageModal').classList.remove('active'); showToast('Language updated! '); }
+
+function selectLanguage(el, lang) {
+  document.querySelectorAll('.language-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const slides = document.getElementById('onboardingSlides');
+  let startX = 0;
+  slides.addEventListener('touchstart', e => startX = e.touches[0].clientX);
+  slides.addEventListener('touchend', e => {
+    const diff = startX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0 && onboardingIndex < 2) onboardingIndex++;
+      else if (diff < 0 && onboardingIndex > 0) onboardingIndex--;
+      slides.scrollTo({ left: onboardingIndex * slides.offsetWidth, behavior: 'smooth' });
+      updateDots();
+    }
+  });
+});
+</script>
+
+</body>
+</html>
